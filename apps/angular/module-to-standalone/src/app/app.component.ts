@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { RouterLink, RouterOutlet } from '@angular/router';
+import { MainShellModule } from '@angular-challenges/module-to-standalone/shell';
 
 @Component({
   selector: 'app-root',
@@ -23,5 +25,7 @@ import { Component } from '@angular/core';
   host: {
     class: 'flex flex-col p-4 gap-3',
   },
+  imports: [MainShellModule, RouterLink, RouterOutlet],
+  standalone: true,
 })
 export class AppComponent {}
