@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { Todo } from './model/todo';
 import { ToDoListComponent } from './UI/toDoList.component';
 import { ToDoListService } from './service/toDoList.service';
 import { BehaviorSubject, tap } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   standalone: true,
@@ -11,28 +12,26 @@ import { BehaviorSubject, tap } from 'rxjs';
   selector: 'app-root',
   template: `
     <app-toDoList
-      [todos]="(todos$ | async) || []"
+      [todos]="todos()"
       (todoUpdate)="update($event)"></app-toDoList>
   `,
   styles: [],
 })
 export class AppComponent implements OnInit {
   toDoListService = inject(ToDoListService);
-  todos$ = new BehaviorSubject<Todo[]>([]);
 
-  ngOnInit(): void {
-    this.toDoListService
-      .getToDo()
-      .pipe(tap((todos) => this.todos$.next(todos)))
-      .subscribe();
+  todos = signal<Todo[]>([]);
+
+  ngOnInit() {
+    this.toDoListService.getToDo().subscribe((todos) => this.todos.set(todos));
   }
 
   update(todo: Todo) {
     this.toDoListService.saveToDo(todo).subscribe((todoUpdated) => {
-      const todos = this.todos$.value;
-      todos[todoUpdated.id - 1] = todoUpdated;
+      const todos = this.todos();
+      this.todos().splice(todoUpdated.id - 1, 1, todoUpdated);
 
-      this.todos$.next(todos);
+      this.todos.set(todos);
     });
   }
 }

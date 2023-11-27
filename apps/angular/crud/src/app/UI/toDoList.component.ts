@@ -1,4 +1,10 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+} from '@angular/core';
 import { NgForOf } from '@angular/common';
 import { Todo } from '../model/todo';
 
@@ -13,6 +19,7 @@ import { Todo } from '../model/todo';
   styles: [``],
   imports: [NgForOf],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ToDoListComponent {
   @Input() todos: Todo[] = [];
