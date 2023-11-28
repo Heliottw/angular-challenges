@@ -4,13 +4,19 @@ import { StudentStore } from '../../data-access/student.store';
 import { CardType } from '../../model/card.model';
 import { Student } from '../../model/student.model';
 import { CardComponent } from '../../ui/card/card.component';
+import { ListItemComponent } from '../../ui/list-item/list-item.component';
+import { NgForOf } from '@angular/common';
+import { Subject, Teacher } from '../../model/teacher.model';
 
 @Component({
   selector: 'app-student-card',
-  template: `<app-card
-    [list]="students"
-    [type]="cardType"
-    customClass="bg-light-green"></app-card>`,
+  template: ` <app-card
+    [items]="students"
+    (addEvent)="handleAdd($event)"
+    (deleteEvent)="handleDelete($event)"
+    customClass="bg-light-green">
+    <img image src="assets/img/student.webp" width="200px" />
+  </app-card>`,
   standalone: true,
   styles: [
     `
@@ -19,17 +25,38 @@ import { CardComponent } from '../../ui/card/card.component';
       }
     `,
   ],
-  imports: [CardComponent],
+  imports: [CardComponent, ListItemComponent, NgForOf],
 })
 export class StudentCardComponent implements OnInit {
   students: Student[] = [];
   cardType = CardType.STUDENT;
-
-  constructor(private http: FakeHttpService, private store: StudentStore) {}
+  id = 0;
+  constructor(
+    private http: FakeHttpService,
+    private store: StudentStore,
+  ) {}
 
   ngOnInit(): void {
     this.http.fetchStudents$.subscribe((s) => this.store.addAll(s));
-
     this.store.students$.subscribe((s) => (this.students = s));
+  }
+
+  handleDelete(id: number) {
+    this.store.deleteOne(id);
+  }
+
+  handleAdd(_: boolean) {
+    this.store.addOne({
+      id: this.id++,
+      firstname: 'axel',
+      lastname: 'duvacher',
+      mainTeacher: {
+        id: 1,
+        firstname: 'ax',
+        lastname: 'duv',
+        subject: 'Sciences',
+      },
+      school: 'les fleurettes',
+    });
   }
 }
