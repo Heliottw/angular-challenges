@@ -4,14 +4,7 @@
 
   <ng-content select="[image]"></ng-content>
   <section>
-    <app-list-item
-      *ngFor="let item of items"
-      [name]="item.firstname"
-      [id]="item.id"
-      (deleteEvent)="handleDelete($event)"
-    >
-    </app-list-item>
-
+    <ng-container *ngTemplateOutlet="listTemplate"></ng-container>
   </section>
   <button
     class="border border-blue-500 bg-blue-300 p-2 rounded-sm"

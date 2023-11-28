@@ -13,9 +13,16 @@ import { Subject, Teacher } from '../../model/teacher.model';
   template: ` <app-card
     [items]="students"
     (addEvent)="handleAdd($event)"
-    (deleteEvent)="handleDelete($event)"
     customClass="bg-light-green">
     <img image src="assets/img/student.webp" width="200px" />
+    <ng-template #list>
+      <app-list-item
+        *ngFor="let student of students"
+        [name]="student.firstname"
+        [id]="student.id"
+        (deleteEvent)="handleDelete($event)">
+      </app-list-item>
+    </ng-template>
   </app-card>`,
   standalone: true,
   styles: [

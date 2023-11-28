@@ -12,9 +12,16 @@ import { NgForOf } from '@angular/common';
   template: ` <app-card
     customClass="bg-light-red"
     [items]="teachers"
-    (addEvent)="handleAdd($event)"
-    (deleteEvent)="handleDelete($event)">
+    (addEvent)="handleAdd($event)">
     <img image src="assets/img/teacher.png" width="200px" />
+    <ng-template #list>
+      <app-list-item
+        *ngFor="let teacher of teachers"
+        [name]="teacher.firstname"
+        [id]="teacher.id"
+        (deleteEvent)="handleDelete($event)">
+      </app-list-item>
+    </ng-template>
   </app-card>`,
   styles: [
     `
@@ -28,7 +35,6 @@ import { NgForOf } from '@angular/common';
 })
 export class TeacherCardComponent implements OnInit {
   teachers: Teacher[] = [];
-  cardType = CardType.TEACHER;
 
   constructor(
     private http: FakeHttpService,
